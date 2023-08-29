@@ -53,6 +53,13 @@ app.layout = html.Div([
             )
         ]),
         html.Div([
+            html.Img(src="https://upload.wikimedia.org/wikipedia/commons/2/26/Twitch_logo.svg",
+                     style={"width": "50px"}),
+            html.H2(
+                id='twitch-visit',
+            )
+        ]),
+        html.Div([
             html.Img(src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/240px-Facebook_logo_%28square%29.png",
                      style={"width": "50px"}),
             html.H2(
@@ -97,6 +104,7 @@ app.layout = html.Div([
 
 @app.callback(
     Output('total-visit', 'children'),
+    Output('twitch-visit', 'children'),
     Output('facebook-visit', 'children'),
     Output('instagram-visit', 'children'),
     Output('twitter-visit', 'children'),
@@ -113,6 +121,15 @@ def update_figures(start_date_selected, end_date_selected, social_networks_selec
     total_visit = (
         df
         .loc[(df.social_network.isin(social_networks_selected)) &
+             (df.device.isin(devices_selected)) &
+             (df.datetime >= start_date_selected) &
+             (df.datetime <= end_date_selected)]
+    ).shape[0]
+
+    twitch_visit = (
+        df
+        .loc[(df.social_network == 'twitch') &
+             (df.social_network.isin(social_networks_selected)) &
              (df.device.isin(devices_selected)) &
              (df.datetime >= start_date_selected) &
              (df.datetime <= end_date_selected)]
@@ -238,7 +255,7 @@ def update_figures(start_date_selected, end_date_selected, social_networks_selec
         }
     )
 
-    return total_visit, facebook_visit, instagram_visit, twitter_visit, total_visit_fig, total_visit_social_network_fig, world_map_fig, devices_pie_fig
+    return total_visit, twitch_visit, facebook_visit, instagram_visit, twitter_visit, total_visit_fig, total_visit_social_network_fig, world_map_fig, devices_pie_fig
 
 
 if __name__ == '__main__':
